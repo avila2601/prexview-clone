@@ -25,6 +25,12 @@ export const routes: Routes = [
     title: 'Edit Template - PrexView Clone'
   },
   {
+    path: 'document-generator',
+    loadComponent: () => import('./features/document-generator/document-generator.component')
+      .then(m => m.DocumentGeneratorComponent),
+    title: 'Document Generator - PrexView Clone'
+  },
+  {
     path: '**',
     redirectTo: '/dashboard'
   }
