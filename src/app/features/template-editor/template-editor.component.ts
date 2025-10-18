@@ -679,22 +679,58 @@ export class TemplateEditorComponent implements OnInit, OnDestroy {
    * Actualiza la vista previa
    */
   updatePreview(): void {
+    console.log('🔍 Starting updatePreview...');
     try {
       const content = this.templateForm.get('content')?.value || '';
       const sampleData = JSON.parse(this.sampleDataJson);
 
+      console.log('📝 HTML Content:', content);
+      console.log('📊 Sample Data:', sampleData);
+
       this.templateService.compileTemplate(content, sampleData).subscribe({
         next: (rendered: string) => {
+          console.log('✅ Compilation successful:', rendered);
           this.previewHtml.set(this.sanitizer.bypassSecurityTrustHtml(rendered));
         },
         error: (error: any) => {
-          console.error('Preview error:', error);
-          this.previewHtml.set('');
+          console.error('❌ Preview error:', error);
+          // Mostrar error detallado en el preview
+          const errorMessage = `
+            <div style="color: red; padding: 20px; border: 2px solid red; border-radius: 8px; background: #ffeaea;">
+              <h3>🚨 Compilation Error</h3>
+              <p><strong>Error:</strong> ${error.message || 'Unknown compilation error'}</p>
+              <hr style="margin: 15px 0;">
+              <h4>Troubleshooting:</h4>
+              <ul>
+                <li>Check your Handlebars syntax: <code>{{'{{'}}variable{{'}}'}}</code></li>
+                <li>Verify JSON data format in Sample Data panel</li>
+                <li>Make sure variable names match between HTML and JSON</li>
+              </ul>
+              <hr style="margin: 15px 0;">
+              <h4>Current Template:</h4>
+              <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow: auto;">${content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+            </div>
+          `;
+          this.previewHtml.set(this.sanitizer.bypassSecurityTrustHtml(errorMessage));
         }
       });
-    } catch (error) {
-      console.error('JSON parse error:', error);
-      this.previewHtml.set('');
+    } catch (jsonError: any) {
+      console.error('❌ JSON parse error:', jsonError);
+      const jsonErrorMessage = `
+        <div style="color: orange; padding: 20px; border: 2px solid orange; border-radius: 8px; background: #fff4e6;">
+          <h3>⚠️ JSON Parse Error</h3>
+          <p><strong>Error:</strong> Invalid JSON in Sample Data</p>
+          <p><strong>Details:</strong> ${jsonError.message}</p>
+          <hr style="margin: 15px 0;">
+          <h4>Fix your JSON format:</h4>
+          <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px;">{
+  "title": "Your Title",
+  "name": "Your Name",
+  "variable": "value"
+}</pre>
+        </div>
+      `;
+      this.previewHtml.set(this.sanitizer.bypassSecurityTrustHtml(jsonErrorMessage));
     }
   }
 

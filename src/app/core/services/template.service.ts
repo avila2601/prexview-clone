@@ -640,22 +640,39 @@ export class TemplateService {
   /**
    * Compila una plantilla con datos de prueba
    */
-  compileTemplate(templateId: string, data: any): Observable<string> {
-    return this.getTemplateById(templateId).pipe(
-      map(template => {
-        if (!template) {
-          throw new Error('Template not found');
-        }
-
+  compileTemplate(templateId: string, data: any): Observable<string>;
+  compileTemplate(htmlContent: string, data: any): Observable<string>;
+  compileTemplate(templateIdOrHtml: string, data: any): Observable<string> {
+    // Si parece ser HTML (contiene tags), compilar directamente
+    if (templateIdOrHtml.includes('<') && templateIdOrHtml.includes('>')) {
+      return new Observable(observer => {
         try {
-          const compiledTemplate = Handlebars.compile(template.htmlContent);
-          return compiledTemplate(data);
+          const compiledTemplate = Handlebars.compile(templateIdOrHtml);
+          const result = compiledTemplate(data);
+          observer.next(result);
+          observer.complete();
         } catch (error: any) {
-          throw new Error(`Template compilation failed: ${error.message}`);
+          observer.error(new Error(`Template compilation failed: ${error.message}`));
         }
-      }),
-      catchError(error => throwError(() => error))
-    );
+      });
+    } else {
+      // Si no, buscar por ID
+      return this.getTemplateById(templateIdOrHtml).pipe(
+        map(template => {
+          if (!template) {
+            throw new Error('Template not found');
+          }
+
+          try {
+            const compiledTemplate = Handlebars.compile(template.htmlContent);
+            return compiledTemplate(data);
+          } catch (error: any) {
+            throw new Error(`Template compilation failed: ${error.message}`);
+          }
+        }),
+        catchError(error => throwError(() => error))
+      );
+    }
   }
 
   /**
