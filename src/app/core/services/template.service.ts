@@ -9,6 +9,7 @@ import {
   ValidationError,
   ErrorSeverity
 } from '../models';
+import { HandlebarsHelpers } from '../utils/handlebars-helpers';
 
 /**
  * Servicio para gestión de plantillas HTML con soporte Handlebars
@@ -23,46 +24,9 @@ export class TemplateService {
   public templates$ = this.templatesSubject.asObservable();
 
   constructor() {
-    this.initializeHandlebarsHelpers();
+    // Registrar todos los helpers de Handlebars
+    HandlebarsHelpers.registerAllHelpers();
     this.loadTemplates();
-  }
-
-  /**
-   * Inicializa helpers personalizados de Handlebars
-   */
-  private initializeHandlebarsHelpers(): void {
-    // Helper para multiplicar números
-    Handlebars.registerHelper('multiply', (a: number, b: number) => {
-      return (a * b).toFixed(2);
-    });
-
-    // Helper para formatear fechas
-    Handlebars.registerHelper('formatDate', (date: string | Date) => {
-      const d = new Date(date);
-      return d.toLocaleDateString('es-ES');
-    });
-
-    // Helper para formatear moneda
-    Handlebars.registerHelper('currency', (amount: number) => {
-      return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'EUR'
-      }).format(amount);
-    });
-
-    // Helper para condicionales mejorados
-    Handlebars.registerHelper('ifEquals', function(this: any, arg1: any, arg2: any, options: any) {
-      return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-    });
-
-    // Helper para loops con índice
-    Handlebars.registerHelper('eachWithIndex', function(this: any, array: any[], options: any) {
-      let result = '';
-      for (let i = 0; i < array.length; i++) {
-        result += options.fn({ ...array[i], index: i, isFirst: i === 0, isLast: i === array.length - 1 });
-      }
-      return result;
-    });
   }
 
   /**

@@ -14,14 +14,14 @@ export const routes: Routes = [
   },
   {
     path: 'template-editor',
-    loadComponent: () => import('./features/template-editor/template-editor.component')
-      .then(m => m.TemplateEditorComponent),
+    loadComponent: () => import('./features/template-editor/template-editor-prexview.component')
+      .then(m => m.TemplateEditorPrexviewComponent),
     title: 'Template Editor - PrexView Clone'
   },
   {
     path: 'template-editor/:id',
-    loadComponent: () => import('./features/template-editor/template-editor.component')
-      .then(m => m.TemplateEditorComponent),
+    loadComponent: () => import('./features/template-editor/template-editor-prexview.component')
+      .then(m => m.TemplateEditorPrexviewComponent),
     title: 'Edit Template - PrexView Clone'
   },
   {
