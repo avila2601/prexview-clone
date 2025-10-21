@@ -1133,6 +1133,100 @@ p {
   }
 
   /**
+   * Parsea XML a JSON manteniendo estructura anidada
+   */
+  private parseXmlToJson(xmlString: string): any {
+    const result: any = {};
+
+    try {
+      const dataMatch = xmlString.match(/<data>([\s\S]*)<\/data>/);
+      if (!dataMatch) return result;
+
+      const innerXml = dataMatch[1];
+
+      // Parse elementos de primer nivel (fuera de bloques anidados)
+      const topLevelRegex = /<(\w+)>([^<]+)<\/\1>/g;
+      let match;
+
+      while ((match = topLevelRegex.exec(innerXml)) !== null) {
+        const tagName = match[1];
+        const value = match[2].trim();
+
+        // Solo agregar si no hay conflicto con elementos anidados
+        if (!result[tagName]) {
+          result[tagName] = value;
+        }
+      }
+
+      // Parse bloques anidados específicos
+      const invoiceMatch = innerXml.match(/<invoice>([\s\S]*?)<\/invoice>/);
+      if (invoiceMatch) {
+        result.invoice = {};
+        const invoiceContent = invoiceMatch[1];
+        const invoiceRegex = /<(\w+)>([\s\S]*?)<\/\1>/g;
+        let invoiceMatchItem;
+
+        while ((invoiceMatchItem = invoiceRegex.exec(invoiceContent)) !== null) {
+          const tagName = invoiceMatchItem[1];
+          const value = invoiceMatchItem[2].trim();
+
+          // Parse bill_to anidado
+          if (tagName === 'bill_to') {
+            result.invoice.bill_to = {};
+            const billToRegex = /<(\w+)>(.*?)<\/\1>/g;
+            let billToMatch;
+            while ((billToMatch = billToRegex.exec(value)) !== null) {
+              result.invoice.bill_to[billToMatch[1]] = billToMatch[2].trim();
+            }
+          } else {
+            result.invoice[tagName] = value;
+          }
+        }
+      }
+
+      // Parse company_info
+      const companyMatch = innerXml.match(/<company_info>([\s\S]*?)<\/company_info>/);
+      if (companyMatch) {
+        result.company_info = {};
+        const companyContent = companyMatch[1];
+        const companyRegex = /<(\w+)>(.*?)<\/\1>/g;
+        let companyMatchItem;
+
+        while ((companyMatchItem = companyRegex.exec(companyContent)) !== null) {
+          result.company_info[companyMatchItem[1]] = companyMatchItem[2].trim();
+        }
+      }
+
+      // Parse items array
+      const itemsMatch = innerXml.match(/<items>([\s\S]*?)<\/items>/);
+      if (itemsMatch) {
+        result.items = [];
+        const itemsContent = itemsMatch[1];
+        const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+        let itemMatch;
+
+        while ((itemMatch = itemRegex.exec(itemsContent)) !== null) {
+          const itemContent = itemMatch[1];
+          const item: any = {};
+          const itemFieldRegex = /<(\w+)>(.*?)<\/\1>/g;
+          let fieldMatch;
+
+          while ((fieldMatch = itemFieldRegex.exec(itemContent)) !== null) {
+            item[fieldMatch[1]] = fieldMatch[2].trim();
+          }
+
+          result.items.push(item);
+        }
+      }
+
+    } catch (error) {
+      console.error('Error parsing XML:', error);
+    }
+
+    return result;
+  }
+
+  /**
    * Aplica scope CSS para que solo afecte al preview document
    */
   private scopeCSSToPreview(css: string): string {
@@ -1171,19 +1265,9 @@ p {
       const content = this.getCurrentSectionContent();
       let xmlDataParsed: any = {};
 
-      // Parse XML data to JSON
+      // Parse XML data to JSON with better structure handling
       if (this.xmlData()) {
-        // Simple XML to JSON conversion for preview
-        const xmlContent = this.xmlData();
-        const dataMatch = xmlContent.match(/<data>([\s\S]*)<\/data>/);
-        if (dataMatch) {
-          const innerXml = dataMatch[1];
-          const tagRegex = /<(\w+)>(.*?)<\/\1>/g;
-          let match;
-          while ((match = tagRegex.exec(innerXml)) !== null) {
-            xmlDataParsed[match[1]] = match[2].trim();
-          }
-        }
+        xmlDataParsed = this.parseXmlToJson(this.xmlData());
       }
 
       this.templateService.compileTemplate(content, xmlDataParsed).subscribe({
