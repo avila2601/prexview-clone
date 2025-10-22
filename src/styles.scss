@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+// Importar estilos globales para plantillas de documentos
+@import 'app/core/templates/document-template-styles.scss';
+
 /* Estilos globales personalizados */
 html, body {
   height: 100%;
