@@ -277,10 +277,11 @@ type DataTab = 'xml' | 'css';
 
           <!-- Preview Content -->
           <div class="preview-content flex-1 overflow-auto p-6 bg-gray-100">
-            <div class="preview-document mx-auto">
+            <div class="preview-document w-full">
               <!-- Document Preview -->
               <div
-                class="document-preview bg-white shadow-xl border border-gray-200 rounded-lg overflow-hidden min-h-96 relative"
+                class="document-preview bg-white shadow-xl border border-gray-200 rounded-lg overflow-hidden min-h-96 relative w-full"
+                style="padding: 20px;"
                 [innerHTML]="previewHtml()"
                 *ngIf="previewHtml()"
                 [style.transform]="'scale(' + (zoomLevel() / 100) + ')'">
@@ -443,14 +444,31 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
   // Document sections content
   documentSections: DocumentSection[] = ['header', 'body', 'footer', 'pagination'];
   sectionContent = signal<Record<DocumentSection, string>>({
-    header: `<div style="border-bottom: 2px solid #6A77D8; padding-bottom: 20px; margin-bottom: 20px;">
-	<h1 style="color: #6A77D8; font-size: 2.5rem; margin: 0;">📋 INVOICE</h1>
-	<div style="margin-top: 15px;">
-		<p><strong>Date issued:</strong> January 1, 1972</p>
-		<p><strong>Invoice number:</strong> ID-8387323</p>
-		<p><strong>Bill to:</strong> Daniel Osorio (hello@prexview.com)</p>
-	</div>
-</div>`,
+    header: `{{#with invoice}}
+<div class="header">
+  <div class="company-info">
+    <h1>{{company_name}}</h1>
+    <p>{{company_address}}</p>
+    <p>{{company_city}}, {{company_state}} {{company_zip}}</p>
+    <p>Tel: {{company_phone}} | Email: {{company_email}}</p>
+  </div>
+
+  <div class="invoice-info">
+    <h2>FACTURA #{{_invoice_number}}</h2>
+    <p><strong>Fecha:</strong> {{_date_issued}}</p>
+    <p><strong>Vencimiento:</strong> {{_due_date}}</p>
+  </div>
+</div>
+
+<div class="client-info">
+  <div class="bill-to">
+    <h3>Facturar a:</h3>
+    <p><strong>{{_customer_name}}</strong></p>
+    <p>{{_customer_address}}</p>
+    <p>{{_customer_city}}, {{_customer_state}} {{_customer_zip}}</p>
+  </div>
+</div>
+{{/with}}`,
     body: `{{#with invoice}}
 <div class="body">
 	<table>
@@ -605,7 +623,9 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
   </order>
 </invoice>`);
 
-  cssData = signal<string>(`$primary: #6A77D8;
+  cssData = signal<string>(`@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+$primary: #6A77D8;
 $darken: #444;
 $secondary: #139ACE;
 $grey: #444;
@@ -709,6 +729,35 @@ hr {
   padding: 5px 0 5px 5px;
 }
 
+.title {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.block {
+  font-size: 1rem;
+  color: #1f2937;
+  font-weight: 500;
+  margin-bottom: 15px;
+  padding: 8px 0;
+}
+
+/* Estilos para que el contenido ocupe todo el ancho */
+.body {
+  width: 100%;
+  max-width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  margin-bottom: 20px;
+}
 
 table th {
   background: #eee;
@@ -1251,12 +1300,15 @@ table td {
     try {
       // Combine all sections to create the full document
       const sections = this.sectionContent();
+      console.log('Header content:', sections.header);
+      console.log('Body content:', sections.body.substring(0, 100));
       const fullContent = `
         ${sections.header}
         ${sections.body}
         ${sections.footer}
         ${sections.pagination}
       `.trim();
+      console.log('Full content preview:', fullContent.substring(0, 300));
 
       let xmlDataParsed: any = {};
 
@@ -1267,6 +1319,7 @@ table td {
 
       this.templateService.compileTemplate(fullContent, xmlDataParsed).subscribe({
         next: async (rendered: string) => {
+          console.log('Rendered HTML preview:', rendered.substring(0, 500));
           // Manual SCSS compilation - replace variables directly
           let compiledCSS = this.cssData();
 

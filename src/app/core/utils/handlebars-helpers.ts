@@ -268,6 +268,52 @@ export class HandlebarsHelpers {
       });
     });
 
+    // Date helper for formatting dates
+    Handlebars.registerHelper('$date', function(dateValue: string, format: string = 'MMMM d, yyyy') {
+      if (!dateValue) return '';
+
+      try {
+        const date = new Date(dateValue);
+        if (isNaN(date.getTime())) return dateValue;
+
+        // Simple date formatting
+        const options: Intl.DateTimeFormatOptions = {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        };
+
+        return date.toLocaleDateString('en-US', options);
+      } catch (error) {
+        return dateValue;
+      }
+    });
+
+    // Icon helper for rendering icons (simplified version)
+    Handlebars.registerHelper('$icon', function(iconName: string, options: any) {
+      if (!iconName) return '';
+
+      // Extract options from the hash
+      const opts = options.hash || {};
+      const library = opts.library || 'material-design';
+      const width = opts.width || 24;
+      const height = opts.height || 24;
+      const color = opts.color || '#000';
+      const fit = opts.fit || false;
+
+      // For material design icons, we'll use a simple Material Icons approach
+      if (library === 'material-design') {
+        return new Handlebars.SafeString(
+          `<span class="material-icons" style="font-size: ${width}px; color: ${color}; width: ${width}px; height: ${height}px; display: inline-flex; align-items: center; justify-content: center;">${iconName}</span>`
+        );
+      }
+
+      // Fallback to a simple div with icon name
+      return new Handlebars.SafeString(
+        `<div style="width: ${width}px; height: ${height}px; background: ${color}; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">${iconName.charAt(0).toUpperCase()}</div>`
+      );
+    });
+
     Handlebars.registerHelper('number', function(value: number, decimals: number = 0, locale: string = 'en-US') {
       if (value === null || value === undefined) return '';
 
