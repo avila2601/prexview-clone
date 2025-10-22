@@ -17,6 +17,7 @@ import { Subject, debounceTime, takeUntil } from 'rxjs';
 
 import { TemplateService } from '../../core/services/template.service';
 import { StorageService } from '../../core/services/storage.service';
+import { ScssCompilerService } from '../../core/services/scss-compiler.service';
 import { Template, TemplateStatus, VariableType } from '../../core/models';
 
 declare var monaco: any;
@@ -450,7 +451,8 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 		<p><strong>Bill to:</strong> Daniel Osorio (hello@prexview.com)</p>
 	</div>
 </div>`,
-    body: `<div class="body">
+    body: `{{#with invoice}}
+<div class="body">
 	<table>
 		<thead>
 			<tr>
@@ -464,15 +466,15 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 		<tbody>
 			{{#each order.product}}
 			<tr>
-				<td>{{id}}</td>
+				<td>{{_id}}</td>
 				<td>
-					<b>{{name}}</b>
+					<b>{{_name}}</b>
 					<br />
-					<span>{{description}}</span>
+					<span>{{_description}}</span>
 				</td>
-				<td class="text-right">$ {{$currency price}}</td>
-				<td class="text-right">{{quantity}}</td>
-				<td class="text-right">$ {{$currency total}}</td>
+				<td class="text-right">$ {{$currency _price}}</td>
+				<td class="text-right">{{_quantity}}</td>
+				<td class="text-right">$ {{$currency _total}}</td>
 			</tr>
 			{{/each}}
 		</tbody>
@@ -482,14 +484,14 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 				<td></td>
 				<td></td>
 				<td class="text-right">Subtotal</td>
-				<td class="text-right"><b>$ {{$currency subtotal}}</b></td>
+				<td class="text-right"><b>$ {{$currency _subtotal}}</b></td>
 			</tr>
 			<tr>
 				<td></td>
 				<td></td>
 				<td></td>
-				<td class="text-right">IVA {{tax_rate}}%</td>
-				<td class="text-right"><b>$ {{$currency tax}}</b></td>
+				<td class="text-right">IVA {{_tax_rate}}%</td>
+				<td class="text-right"><b>$ {{$currency _tax}}</b></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -503,12 +505,13 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 			<div class="col-5 text-right">
 				<div class="box box-right">
 					<h2>Total</h2>
-					<h1>{{currency}}&nbsp;&nbsp;&nbsp;$ {{$currency total}}</h1>
+					<h1>{{currency}}&nbsp;&nbsp;&nbsp;$ {{$currency _total}}</h1>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>`,
+</div>
+{{/with}}`,
     footer: '',
     pagination: ''
   });
@@ -602,9 +605,13 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
   </order>
 </invoice>`);
 
-  cssData = signal<string>(`
+  cssData = signal<string>(`$primary: #6A77D8;
+$darken: #444;
+$secondary: #139ACE;
+$grey: #444;
+
 .primary {
-  background: #6A77D8;
+  background: $primary;
   color: #fff;
 }
 
@@ -653,10 +660,10 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 }
 
 .logo {
-  border-top: 8px solid #444;
+  border-top: 8px solid $grey;
   position: absolute;
   overflow: hidden;
-  background: #6A77D8;
+  background: $primary;
   display: block;
   right: 0px;
   left: 0px;
@@ -680,7 +687,7 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 }
 
 hr {
-  border-color: #6A77D8;
+  border-color: $primary;
   border-width: 2px;
 }
 
@@ -721,9 +728,9 @@ hr {
 
 table th {
   background: #eee;
-  border-bottom: 2px solid #6A77D8;
+  border-bottom: 2px solid $primary;
   padding: 10px 10px;
-  color: #6A77D8;
+  color: $primary;
 }
 
 table td:first-of-type {
@@ -741,7 +748,7 @@ table td {
 
 .thanks {
   font-size: 30pt;
-  color: #6A77D8;
+  color: $primary;
   display: inline-block;
   line-height: 80%;
 }
@@ -761,7 +768,7 @@ table td {
 .total .box-left {
   background: #f3f3f3;
 
-	border-bottom: 8px solid #6A77D8;
+	border-bottom: 8px solid $primary;
 }
 
 .total .box-left h1 {
@@ -790,13 +797,13 @@ table td {
 }
 
 .total .box-right {
-  background: #6A77D8;
+  background: $primary;
   color: #fff;
 }
 
 .footer {
   height: 100%;
-  border-top: 2px solid #6A77D8;
+  border-top: 2px solid $primary;
   padding-top: 10px;
   margin-top: 10px;
 }
@@ -823,7 +830,8 @@ table td {
     private router: Router,
     private templateService: TemplateService,
     private storageService: StorageService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private scssCompiler: ScssCompilerService
   ) {}
 
   ngOnInit(): void {
@@ -1146,7 +1154,9 @@ table td {
         let attrMatch;
 
         while ((attrMatch = attributeRegex.exec(attributesString)) !== null) {
+          // Add both original and prefixed versions for PrexView compatibility
           result[attrMatch[1]] = attrMatch[2];
+          result[`_${attrMatch[1]}`] = attrMatch[2];
         }
 
         const innerXml = invoiceMatch[2];
@@ -1159,7 +1169,9 @@ table td {
           let billToAttrMatch;
 
           while ((billToAttrMatch = billToAttrRegex.exec(billToMatch[1])) !== null) {
+            // Add both original and prefixed versions for PrexView compatibility
             result.bill_to[billToAttrMatch[1]] = billToAttrMatch[2];
+            result.bill_to[`_${billToAttrMatch[1]}`] = billToAttrMatch[2];
           }
         }
 
@@ -1176,14 +1188,17 @@ table td {
             let productAttrMatch;
 
             while ((productAttrMatch = productAttrRegex.exec(productMatch[1])) !== null) {
+              // Add both original and prefixed versions for PrexView compatibility
               product[productAttrMatch[1]] = productAttrMatch[2];
+              product[`_${productAttrMatch[1]}`] = productAttrMatch[2];
             }
 
             result.order.product.push(product);
           }
         }
 
-        return result;
+        // Return the structure that allows {{#with invoice}} to work
+        return { invoice: result };
       }
 
       // Fallback for old <data> format
@@ -1248,7 +1263,7 @@ table td {
   /**
    * Actualiza vista previa
    */
-  updatePreview(): void {
+  async updatePreview(): Promise<void> {
     try {
       // Combine all sections to create the full document
       const sections = this.sectionContent();
@@ -1267,9 +1282,12 @@ table td {
       }
 
       this.templateService.compileTemplate(fullContent, xmlDataParsed).subscribe({
-        next: (rendered: string) => {
+        next: async (rendered: string) => {
+          // Compile SCSS to CSS before applying styles
+          const compiledCSS = await this.scssCompiler.compileScss(this.cssData());
+
           // Add CSS styles scoped to preview document only
-          const scopedCSS = this.scopeCSSToPreview(this.cssData());
+          const scopedCSS = this.scopeCSSToPreview(compiledCSS);
           const styledContent = `
             <style>${scopedCSS}</style>
             <div class="document-preview-content">
