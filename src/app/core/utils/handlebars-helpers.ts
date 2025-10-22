@@ -256,6 +256,18 @@ export class HandlebarsHelpers {
       }
     });
 
+    // Alias for $currency helper (common usage pattern)
+    Handlebars.registerHelper('$currency', function(amount: number, currency: string = 'USD', locale: string = 'en-US') {
+      if (amount === null || amount === undefined) return '';
+
+      // Format with comma separators and 2 decimals, no currency symbol for $currency
+      const num = Number(amount);
+      return num.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    });
+
     Handlebars.registerHelper('number', function(value: number, decimals: number = 0, locale: string = 'en-US') {
       if (value === null || value === undefined) return '';
 

@@ -442,49 +442,15 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
   // Document sections content
   documentSections: DocumentSection[] = ['header', 'body', 'footer', 'pagination'];
   sectionContent = signal<Record<DocumentSection, string>>({
-    header: `{{#with invoice}}
-<div class="row header">
-	<div class="col-3 relative">
-		<div class="logo">
-			<div class="box">
-				<div class="box">
-					{{$icon
-						"party_mode"
-						library="material-design"
-						width=80
-						height=80
-						fit=true
-						color="#fff"
-					}}
-				</div>
-			</div>
-		</div>
+    header: `<div style="border-bottom: 2px solid #6A77D8; padding-bottom: 20px; margin-bottom: 20px;">
+	<h1 style="color: #6A77D8; font-size: 2.5rem; margin: 0;">📋 INVOICE</h1>
+	<div style="margin-top: 15px;">
+		<p><strong>Date issued:</strong> January 1, 1972</p>
+		<p><strong>Invoice number:</strong> ID-8387323</p>
+		<p><strong>Bill to:</strong> Daniel Osorio (hello@prexview.com)</p>
 	</div>
-	<div class="col-4 text-center"></div>
-	<div class="col-5">
-		<div class="details">
-			<h1>Invoice</h1>
-			<hr />
-			<div class="row">
-				<div class="col-6">
-					<div class="title"><b>Date issued</b></div>
-					<div class="block">{{$date _date_issued}}</div>
-				</div>
-				<div class="col-6">
-					<div class="title"><b>Invoice number</b></div>
-					<div class="block">{{_number}}</div>
-				</div>
-				<div class="col-12">
-					<div class="title"><b>Bill to</b></div>
-					<div class="block">{{bill_to._name}} ({{bill_to._email}})</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-{{/with}}`,
-    body: `{{#with invoice}}
-<div class="body">
+</div>`,
+    body: `<div class="body">
 	<table>
 		<thead>
 			<tr>
@@ -498,15 +464,15 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 		<tbody>
 			{{#each order.product}}
 			<tr>
-				<td>{{_id}}</td>
+				<td>{{id}}</td>
 				<td>
-					<b>{{_name}}</b>
+					<b>{{name}}</b>
 					<br />
-					<span>{{_description}}</span>
+					<span>{{description}}</span>
 				</td>
-				<td class="text-right">$ {{$currency _price}}</td>
-				<td class="text-right">{{_quantity}}</td>
-				<td class="text-right">$ {{$currency _total}}</td>
+				<td class="text-right">$ {{$currency price}}</td>
+				<td class="text-right">{{quantity}}</td>
+				<td class="text-right">$ {{$currency total}}</td>
 			</tr>
 			{{/each}}
 		</tbody>
@@ -516,14 +482,14 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 				<td></td>
 				<td></td>
 				<td class="text-right">Subtotal</td>
-				<td class="text-right"><b>$ {{$currency _subtotal}}</b></td>
+				<td class="text-right"><b>$ {{$currency subtotal}}</b></td>
 			</tr>
 			<tr>
 				<td></td>
 				<td></td>
 				<td></td>
-				<td class="text-right">IVA {{_tax_rate}}%</td>
-				<td class="text-right"><b>$ {{$currency _tax}}</b></td>
+				<td class="text-right">IVA {{tax_rate}}%</td>
+				<td class="text-right"><b>$ {{$currency tax}}</b></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -537,13 +503,12 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 			<div class="col-5 text-right">
 				<div class="box box-right">
 					<h2>Total</h2>
-					<h1>{{currency}}&nbsp;&nbsp;&nbsp;$ {{$currency _total}}</h1>
+					<h1>{{currency}}&nbsp;&nbsp;&nbsp;$ {{$currency total}}</h1>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-{{/with}}`,
+</div>`,
     footer: '',
     pagination: ''
   });
@@ -637,15 +602,33 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
   </order>
 </invoice>`);
 
-  cssData = signal<string>(`$primary: #6A77D8;
-$darken: #444;
-$secondary: #139ACE;
-$grey: #444;
-
+  cssData = signal<string>(`
 .primary {
-  background: $primary;
+  background: #6A77D8;
   color: #fff;
 }
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+}
+
+.col-1, .col-2, .col-3, .col-4, .col-5, .col-6,
+.col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+  padding: 0 15px;
+}
+
+.col-3 { width: 25%; }
+.col-4 { width: 33.333%; }
+.col-5 { width: 41.666%; }
+.col-6 { width: 50%; }
+.col-7 { width: 58.333%; }
+.col-12 { width: 100%; }
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
 
 .header,
 .header .col-3,
@@ -670,10 +653,10 @@ $grey: #444;
 }
 
 .logo {
-  border-top: 8px solid $grey;
+  border-top: 8px solid #444;
   position: absolute;
   overflow: hidden;
-  background: $primary;
+  background: #6A77D8;
   display: block;
   right: 0px;
   left: 0px;
@@ -697,7 +680,7 @@ $grey: #444;
 }
 
 hr {
-  border-color: $primary;
+  border-color: #6A77D8;
   border-width: 2px;
 }
 
@@ -719,12 +702,28 @@ hr {
   padding: 5px 0 5px 5px;
 }
 
+.title {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.block {
+  font-size: 1rem;
+  color: #1f2937;
+  font-weight: 500;
+  margin-bottom: 15px;
+  padding: 8px 0;
+}
 
 table th {
   background: #eee;
-  border-bottom: 2px solid $primary;
+  border-bottom: 2px solid #6A77D8;
   padding: 10px 10px;
-  color: $primary;
+  color: #6A77D8;
 }
 
 table td:first-of-type {
@@ -742,7 +741,7 @@ table td {
 
 .thanks {
   font-size: 30pt;
-  color: $primary;
+  color: #6A77D8;
   display: inline-block;
   line-height: 80%;
 }
@@ -762,7 +761,7 @@ table td {
 .total .box-left {
   background: #f3f3f3;
 
-	border-bottom: 8px solid $primary;
+	border-bottom: 8px solid #6A77D8;
 }
 
 .total .box-left h1 {
@@ -791,13 +790,13 @@ table td {
 }
 
 .total .box-right {
-  background: $primary;
+  background: #6A77D8;
   color: #fff;
 }
 
 .footer {
   height: 100%;
-  border-top: 2px solid $primary;
+  border-top: 2px solid #6A77D8;
   padding-top: 10px;
   margin-top: 10px;
 }
@@ -831,6 +830,8 @@ table td {
     this.initializeEditor();
     this.loadTemplate();
     this.setupAutoSave();
+    // Initialize preview
+    setTimeout(() => this.updatePreview(), 100);
   }
 
   ngOnDestroy(): void {
@@ -1133,94 +1134,84 @@ table td {
    * Parsea XML a JSON manteniendo estructura anidada
    */
   private parseXmlToJson(xmlString: string): any {
-    const result: any = {};
-
     try {
-      const dataMatch = xmlString.match(/<data>([\s\S]*)<\/data>/);
-      if (!dataMatch) return result;
-
-      const innerXml = dataMatch[1];
-
-      // Parse elementos de primer nivel (fuera de bloques anidados)
-      const topLevelRegex = /<(\w+)>([^<]+)<\/\1>/g;
-      let match;
-
-      while ((match = topLevelRegex.exec(innerXml)) !== null) {
-        const tagName = match[1];
-        const value = match[2].trim();
-
-        // Solo agregar si no hay conflicto con elementos anidados
-        if (!result[tagName]) {
-          result[tagName] = value;
-        }
-      }
-
-      // Parse bloques anidados específicos
-      const invoiceMatch = innerXml.match(/<invoice>([\s\S]*?)<\/invoice>/);
+      // Handle both <data> and <invoice> root elements
+      const invoiceMatch = xmlString.match(/<invoice([^>]*)>([\s\S]*)<\/invoice>/);
       if (invoiceMatch) {
-        result.invoice = {};
-        const invoiceContent = invoiceMatch[1];
-        const invoiceRegex = /<(\w+)>([\s\S]*?)<\/\1>/g;
-        let invoiceMatchItem;
+        const result: any = {};
 
-        while ((invoiceMatchItem = invoiceRegex.exec(invoiceContent)) !== null) {
-          const tagName = invoiceMatchItem[1];
-          const value = invoiceMatchItem[2].trim();
+        // Parse attributes from the invoice tag
+        const attributesString = invoiceMatch[1];
+        const attributeRegex = /(\w+)="([^"]*)"/g;
+        let attrMatch;
 
-          // Parse bill_to anidado
-          if (tagName === 'bill_to') {
-            result.invoice.bill_to = {};
-            const billToRegex = /<(\w+)>(.*?)<\/\1>/g;
-            let billToMatch;
-            while ((billToMatch = billToRegex.exec(value)) !== null) {
-              result.invoice.bill_to[billToMatch[1]] = billToMatch[2].trim();
+        while ((attrMatch = attributeRegex.exec(attributesString)) !== null) {
+          result[attrMatch[1]] = attrMatch[2];
+        }
+
+        const innerXml = invoiceMatch[2];
+
+        // Parse bill_to
+        const billToMatch = innerXml.match(/<bill_to([^>]*)>/);
+        if (billToMatch) {
+          result.bill_to = {};
+          const billToAttrRegex = /(\w+)="([^"]*)"/g;
+          let billToAttrMatch;
+
+          while ((billToAttrMatch = billToAttrRegex.exec(billToMatch[1])) !== null) {
+            result.bill_to[billToAttrMatch[1]] = billToAttrMatch[2];
+          }
+        }
+
+        // Parse order and products
+        const orderMatch = innerXml.match(/<order>([\s\S]*?)<\/order>/);
+        if (orderMatch) {
+          result.order = { product: [] };
+          const productRegex = /<product([^>]*)>/g;
+          let productMatch;
+
+          while ((productMatch = productRegex.exec(orderMatch[1])) !== null) {
+            const product: any = {};
+            const productAttrRegex = /(\w+)="([^"]*)"/g;
+            let productAttrMatch;
+
+            while ((productAttrMatch = productAttrRegex.exec(productMatch[1])) !== null) {
+              product[productAttrMatch[1]] = productAttrMatch[2];
             }
-          } else {
-            result.invoice[tagName] = value;
+
+            result.order.product.push(product);
           }
         }
+
+        return result;
       }
 
-      // Parse company_info
-      const companyMatch = innerXml.match(/<company_info>([\s\S]*?)<\/company_info>/);
-      if (companyMatch) {
-        result.company_info = {};
-        const companyContent = companyMatch[1];
-        const companyRegex = /<(\w+)>(.*?)<\/\1>/g;
-        let companyMatchItem;
+      // Fallback for old <data> format
+      const dataMatch = xmlString.match(/<data>([\s\S]*)<\/data>/);
+      if (dataMatch) {
+        const result: any = {};
+        const innerXml = dataMatch[1];
 
-        while ((companyMatchItem = companyRegex.exec(companyContent)) !== null) {
-          result.company_info[companyMatchItem[1]] = companyMatchItem[2].trim();
-        }
-      }
+        // Parse elementos de primer nivel
+        const topLevelRegex = /<(\w+)>([^<]+)<\/\1>/g;
+        let match;
 
-      // Parse items array
-      const itemsMatch = innerXml.match(/<items>([\s\S]*?)<\/items>/);
-      if (itemsMatch) {
-        result.items = [];
-        const itemsContent = itemsMatch[1];
-        const itemRegex = /<item>([\s\S]*?)<\/item>/g;
-        let itemMatch;
-
-        while ((itemMatch = itemRegex.exec(itemsContent)) !== null) {
-          const itemContent = itemMatch[1];
-          const item: any = {};
-          const itemFieldRegex = /<(\w+)>(.*?)<\/\1>/g;
-          let fieldMatch;
-
-          while ((fieldMatch = itemFieldRegex.exec(itemContent)) !== null) {
-            item[fieldMatch[1]] = fieldMatch[2].trim();
+        while ((match = topLevelRegex.exec(innerXml)) !== null) {
+          const tagName = match[1];
+          const value = match[2].trim();
+          if (!result[tagName]) {
+            result[tagName] = value;
           }
-
-          result.items.push(item);
         }
+
+        return result;
       }
 
+      return {};
     } catch (error) {
-      console.error('Error parsing XML:', error);
+      console.error('XML parsing error:', error);
+      return {};
     }
-
-    return result;
   }
 
   /**
@@ -1259,7 +1250,15 @@ table td {
    */
   updatePreview(): void {
     try {
-      const content = this.getCurrentSectionContent();
+      // Combine all sections to create the full document
+      const sections = this.sectionContent();
+      const fullContent = `
+        ${sections.header}
+        ${sections.body}
+        ${sections.footer}
+        ${sections.pagination}
+      `.trim();
+
       let xmlDataParsed: any = {};
 
       // Parse XML data to JSON with better structure handling
@@ -1267,7 +1266,7 @@ table td {
         xmlDataParsed = this.parseXmlToJson(this.xmlData());
       }
 
-      this.templateService.compileTemplate(content, xmlDataParsed).subscribe({
+      this.templateService.compileTemplate(fullContent, xmlDataParsed).subscribe({
         next: (rendered: string) => {
           // Add CSS styles scoped to preview document only
           const scopedCSS = this.scopeCSSToPreview(this.cssData());
