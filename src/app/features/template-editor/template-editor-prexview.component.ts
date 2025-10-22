@@ -442,378 +442,375 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
   // Document sections content
   documentSections: DocumentSection[] = ['header', 'body', 'footer', 'pagination'];
   sectionContent = signal<Record<DocumentSection, string>>({
-    header: '',
-    body: '<!DOCTYPE html>\n<html>\n<head>\n  <title>{{title}}</title>\n</head>\n<body>\n  <h1>Hello {{name}}!</h1>\n  <p>Welcome to your template.</p>\n</body>\n</html>',
+    header: `{{#with invoice}}
+<div class="row header">
+	<div class="col-3 relative">
+		<div class="logo">
+			<div class="box">
+				<div class="box">
+					{{$icon
+						"party_mode"
+						library="material-design"
+						width=80
+						height=80
+						fit=true
+						color="#fff"
+					}}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-4 text-center"></div>
+	<div class="col-5">
+		<div class="details">
+			<h1>Invoice</h1>
+			<hr />
+			<div class="row">
+				<div class="col-6">
+					<div class="title"><b>Date issued</b></div>
+					<div class="block">{{$date _date_issued}}</div>
+				</div>
+				<div class="col-6">
+					<div class="title"><b>Invoice number</b></div>
+					<div class="block">{{_number}}</div>
+				</div>
+				<div class="col-12">
+					<div class="title"><b>Bill to</b></div>
+					<div class="block">{{bill_to._name}} ({{bill_to._email}})</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{/with}}`,
+    body: `{{#with invoice}}
+<div class="body">
+	<table>
+		<thead>
+			<tr>
+				<th class="text-left">ID</th>
+				<th class="text-left">Description</th>
+				<th class="text-right">Price</th>
+				<th class="text-right">Quantity</th>
+				<th class="text-right">Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each order.product}}
+			<tr>
+				<td>{{_id}}</td>
+				<td>
+					<b>{{_name}}</b>
+					<br />
+					<span>{{_description}}</span>
+				</td>
+				<td class="text-right">$ {{$currency _price}}</td>
+				<td class="text-right">{{_quantity}}</td>
+				<td class="text-right">$ {{$currency _total}}</td>
+			</tr>
+			{{/each}}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="text-right">Subtotal</td>
+				<td class="text-right"><b>$ {{$currency _subtotal}}</b></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="text-right">IVA {{_tax_rate}}%</td>
+				<td class="text-right"><b>$ {{$currency _tax}}</b></td>
+			</tr>
+		</tfoot>
+	</table>
+	<div class="total">
+		<div class="row">
+			<div class="col-7">
+				<div class="box box-left">
+					<h1 class="thanks">Thank you!</h1>
+				</div>
+			</div>
+			<div class="col-5 text-right">
+				<div class="box box-right">
+					<h2>Total</h2>
+					<h1>{{currency}}&nbsp;&nbsp;&nbsp;$ {{$currency _total}}</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{/with}}`,
     footer: '',
     pagination: ''
   });
 
   // Data content
-  xmlData = signal<string>(`<data>
-  <title>Sample Document</title>
-  <name>John Doe</name>
-  <company>ACME Corp</company>
-  <amount>1500.00</amount>
-  <date>2025-10-18</date>
+  xmlData = signal<string>(`<invoice
+  number="ID-8387323"
+  date_issued="1972-01-01 13:42:24"
+  currency="USD"
+  subtotal="52330"
+  tax_rate="16"
+  tax="8372.8"
+  total="60702.8">
+  <bill_to
+    name="Daniel Osorio"
+    email="hello@prexview.com">
+  </bill_to>
+  <order>
+    <product
+      id="3421"
+      name="Apple"
+      description="Lorem ipsum dolor si amen"
+      price="150"
+      quantity="75"
+      total="11250">
+    </product>
+    <product
+      id="8473"
+      name="Banana"
+      description="Lorem ipsum dolor si amen"
+      price="80"
+      quantity="38"
+      total="3040">
+    </product>
+    <product
+      id="7820"
+      name="Blackberry"
+      description="Lorem ipsum dolor si amen"
+      price="130"
+      quantity="32"
+      total="4160">
+    </product>
+    <product
+      id="8734"
+      name="Grape"
+      description="Lorem ipsum dolor si amen"
+      price="180"
+      quantity="49"
+      total="8820">
+    </product>
+    <product
+      id="8902"
+      name="Mango"
+      description="Lorem ipsum dolor si amen"
+      price="110"
+      quantity="28"
+      total="3080">
+    </product>
+    <product
+      id="3674"
+      name="Pineapple"
+      description="Lorem ipsum dolor si amen"
+      price="120"
+      quantity="13"
+      total="1560">
+    </product>
+    <product
+      id="8730"
+      name="Watermelon"
+      description="Lorem ipsum dolor si amen"
+      price="150"
+      quantity="120"
+      total="18000">
+    </product>
+    <product
+      id="1567"
+      name="Lemon"
+      description="Lorem ipsum dolor si amen"
+      price="30"
+      quantity="27"
+      total="810">
+    </product>
+    <product
+      id="4783"
+      name="Orange"
+      description="Lorem ipsum dolor si amen"
+      price="70"
+      quantity="23"
+      total="1610">
+    </product>
+  </order>
+</invoice>`);
 
-  <!-- Invoice Data -->
-  <invoice>
-    <_date_issued>2025-01-15</_date_issued>
-    <_number>INV-001234</_number>
-    <bill_to>
-      <_name>John Smith</_name>
-      <_email>john.smith@company.com</_email>
-      <_company>Tech Solutions Inc.</_company>
-      <_address>123 Business Ave</_address>
-      <_city>New York</_city>
-      <_country>USA</_country>
-    </bill_to>
-    <subtotal>1200.00</subtotal>
-    <tax>240.00</tax>
-    <taxRate>20</taxRate>
-    <total>1440.00</total>
-    <notes>Payment due within 30 days</notes>
-  </invoice>
+  cssData = signal<string>(`$primary: #6A77D8;
+$darken: #444;
+$secondary: #139ACE;
+$grey: #444;
 
-  <!-- Company Data -->
-  <company_info>
-    <name>PrexView Corporation</name>
-    <address>456 Software Street</address>
-    <city>San Francisco</city>
-    <country>USA</country>
-    <taxId>123456789</taxId>
-    <email>info@prexview.com</email>
-    <phone>+1 (555) 123-4567</phone>
-  </company_info>
-
-  <!-- Sample Items -->
-  <items>
-    <item>
-      <description>Web Development Services</description>
-      <quantity>40</quantity>
-      <price>25.00</price>
-    </item>
-    <item>
-      <description>Design Consultation</description>
-      <quantity>10</quantity>
-      <price>50.00</price>
-    </item>
-    <item>
-      <description>Project Management</description>
-      <quantity>15</quantity>
-      <price>30.00</price>
-    </item>
-  </items>
-</data>`);
-
-  cssData = signal<string>(`/* PrexView Template Styles */
-
-/* ========== RESET & BASE ========== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+.primary {
+  background: $primary;
+  color: #fff;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.6;
-  color: #1f2937;
-  background: #ffffff;
-  margin: 20px;
+.header,
+.header .col-3,
+.header .col-4,
+.header .col-5{
+  position: relative;
+  height: 100%;
 }
 
-/* ========== GRID SYSTEM ========== */
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -15px;
-}
-
-.col-1 { flex: 0 0 8.333%; max-width: 8.333%; padding: 0 15px; }
-.col-2 { flex: 0 0 16.666%; max-width: 16.666%; padding: 0 15px; }
-.col-3 { flex: 0 0 25%; max-width: 25%; padding: 0 15px; }
-.col-4 { flex: 0 0 33.333%; max-width: 33.333%; padding: 0 15px; }
-.col-5 { flex: 0 0 41.666%; max-width: 41.666%; padding: 0 15px; }
-.col-6 { flex: 0 0 50%; max-width: 50%; padding: 0 15px; }
-.col-7 { flex: 0 0 58.333%; max-width: 58.333%; padding: 0 15px; }
-.col-8 { flex: 0 0 66.666%; max-width: 66.666%; padding: 0 15px; }
-.col-9 { flex: 0 0 75%; max-width: 75%; padding: 0 15px; }
-.col-10 { flex: 0 0 83.333%; max-width: 83.333%; padding: 0 15px; }
-.col-11 { flex: 0 0 91.666%; max-width: 91.666%; padding: 0 15px; }
-.col-12 { flex: 0 0 100%; max-width: 100%; padding: 0 15px; }
-
-/* ========== TYPOGRAPHY ========== */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  line-height: 1.2;
-  margin-bottom: 1rem;
-}
-
-h1 {
-  font-size: 2.5rem;
-  color: #1f2937;
-}
-h2 {
-  font-size: 2rem;
-  color: #374151;
-}
-h3 {
-  font-size: 1.5rem;
-  color: #4b5563;
-}
-
-p {
-  margin-bottom: 1rem;
-}
-
-/* ========== HEADER STYLES ========== */
 .header {
-  padding: 30px 0;
-  border-bottom: 2px solid #e5e7eb;
-  margin-bottom: 30px;
-}
-
-.logo .box {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  border-radius: 12px;
-  padding: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.details h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #1f2937;
-  margin: 0 0 10px 0;
-}
-
-.details hr {
-  border: none;
-  border-top: 3px solid #3b82f6;
-  margin: 15px 0 25px 0;
-  border-radius: 2px;
-}
-
-/* ========== UTILITY CLASSES ========== */
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
-.text-justify { text-align: justify; }
-
-.relative { position: relative; }
-.absolute { position: absolute; }
-
-.title {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-}
-
-.block {
-  font-size: 1rem;
-  color: #1f2937;
-  font-weight: 500;
-  margin-bottom: 15px;
-  padding: 8px 0;
-}
-
-/* ========== INVOICE SPECIFIC ========== */
-.invoice-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 8px;
-}
-
-.invoice-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #3b82f6;
-  margin: 0;
-}
-
-.invoice-number,
-.invoice-date {
-  font-size: 1rem;
-  color: #6b7280;
-  margin: 5px 0;
-}
-
-.company-info,
-.customer-info {
-  margin-bottom: 30px;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 8px;
-  border-left: 4px solid #3b82f6;
-}
-
-.company-info h2,
-.customer-info h3 {
-  color: #3b82f6;
-  margin-top: 0;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 10px;
-}
-
-.customer-details {
-  line-height: 1.8;
-  margin-top: 15px;
-}
-
-/* ========== MATERIAL ICONS ========== */
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-
-.material-icons {
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-feature-settings: 'liga';
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ========== TABLES ========== */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
   overflow: hidden;
 }
 
-.table th,
-.table td {
-  border: 1px solid #e5e7eb;
-  padding: 12px 15px;
-  text-align: left;
+.footer {
+  height: inherit;
+  height: 100%;
 }
 
-.table th {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
-  font-weight: 600;
-  border-bottom: 2px solid #1d4ed8;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.8rem;
+
+.relative {
+  position: relative;
 }
 
-.table tbody tr:nth-child(even) {
-  background-color: #f8fafc;
+.logo {
+  border-top: 8px solid $grey;
+  position: absolute;
+  overflow: hidden;
+  background: $primary;
+  display: block;
+  right: 0px;
+  left: 0px;
+  top: 0px;
+  bottom: 20px;
 }
 
-.table tbody tr:hover {
-  background-color: #e0f2fe;
-  transition: background-color 0.2s ease;
+.logo .box {
+  display: table;
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
 }
 
-.table .quantity,
-.table .price,
-.table .total {
-  text-align: right;
-  font-family: 'Monaco', 'Consolas', monospace;
-  font-weight: 500;
+.logo .box .box {
+  display: table-cell;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  vertical-align: middle;
 }
 
-/* ========== CARDS & CONTAINERS ========== */
-.card {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-bottom: 20px;
+hr {
+  border-color: $primary;
+  border-width: 2px;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+.details {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
 }
 
-/* ========== BUTTONS ========== */
-.btn {
+
+.details h1 {
+  font-size: 30pt;
+  margin: 0px;
+  padding: 0px;
+}
+
+.details .block {
+  margin: 0px;
+  padding: 5px 0 5px 5px;
+}
+
+
+table th {
+  background: #eee;
+  border-bottom: 2px solid $primary;
+  padding: 10px 10px;
+  color: $primary;
+}
+
+table td:first-of-type {
+  padding: 10px 10px !important;
+}
+
+table td:last-of-type {
+  padding: 10px 10px !important;
+}
+
+table td {
+  vertical-align: top;
+  padding: 10px 5px;
+}
+
+.thanks {
+  font-size: 30pt;
+  color: $primary;
   display: inline-block;
-  padding: 10px 20px;
-  background: #3b82f6;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
+  line-height: 80%;
 }
 
-.btn:hover {
-  background: #2563eb;
+.total {
+  overflow: hidden;
 }
 
-.btn-secondary {
-  background: #6b7280;
+.total .box {
+  padding: 20px;
+  color: #fff;
+  min-height: 90px;
+  overflow: hidden;
+  position: relative;
 }
 
-.btn-secondary:hover {
-  background: #4b5563;
+.total .box-left {
+  background: #f3f3f3;
+
+	border-bottom: 8px solid $primary;
 }
 
-/* ========== RESPONSIVE ========== */
-@media print {
-  body {
-    margin: 0;
-    font-size: 12px;
-  }
-  .header {
-    page-break-after: avoid;
-  }
-  .table {
-    font-size: 11px;
-  }
+.total .box-left h1 {
+  position: absolute;
+  bottom: 14px;
+  right: 20px;
+  padding: 0px;
+  margin: 0px;
 }
 
-@media (max-width: 768px) {
-  .col-1, .col-2, .col-3, .col-4, .col-5, .col-6,
-  .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-
-  .invoice-header {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .row {
-    margin: 0;
-  }
-
-  .col-3, .col-4, .col-5 {
-    padding: 10px 0;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-
-  .details h1 {
-    font-size: 2rem;
-  }
+.total .box-right h1 {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 0px;
+  margin: 0px;
 }
+
+.total .box-right h2 {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 0px;
+  margin: 0px;
+  opacity: 0.5;
+}
+
+.total .box-right {
+  background: $primary;
+  color: #fff;
+}
+
+.footer {
+  height: 100%;
+  border-top: 2px solid $primary;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+.body{
+  overflow:hidden;
+}
+.pagination {
+  margin: 20px 0 0 0;
+  font-size: 8pt;
+}
+
+.footer .block {
+	padding: 3px 0;
 }`);
 
   // Lifecycle
