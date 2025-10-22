@@ -204,7 +204,7 @@ type DataTab = 'xml' | 'css';
           </div>
 
           <!-- Bottom Data Panel -->
-          <div class="data-panel h-64 border-t border-gray-300 flex flex-col bg-white">
+          <div class="data-panel h-96 border-t border-gray-300 flex flex-col bg-white">
             <!-- Data Tabs -->
             <div class="data-tabs bg-gray-50 border-b border-gray-200">
               <div class="flex">
