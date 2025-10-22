@@ -709,22 +709,6 @@ hr {
   padding: 5px 0 5px 5px;
 }
 
-.title {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-}
-
-.block {
-  font-size: 1rem;
-  color: #1f2937;
-  font-weight: 500;
-  margin-bottom: 15px;
-  padding: 8px 0;
-}
 
 table th {
   background: #eee;
@@ -1283,13 +1267,24 @@ table td {
 
       this.templateService.compileTemplate(fullContent, xmlDataParsed).subscribe({
         next: async (rendered: string) => {
-          // Compile SCSS to CSS before applying styles
-          const compiledCSS = await this.scssCompiler.compileScss(this.cssData());
+          // Manual SCSS compilation - replace variables directly
+          let compiledCSS = this.cssData();
 
-          // Add CSS styles scoped to preview document only
-          const scopedCSS = this.scopeCSSToPreview(compiledCSS);
+          // Remove SCSS variable declarations
+          compiledCSS = compiledCSS.replace(/\$[\w-]+:\s*[^;]+;/g, '');
+
+          // Replace SCSS variables with actual values
+          compiledCSS = compiledCSS.replace(/\$primary/g, '#6A77D8');
+          compiledCSS = compiledCSS.replace(/\$grey/g, '#444');
+          compiledCSS = compiledCSS.replace(/\$secondary/g, '#139ACE');
+          compiledCSS = compiledCSS.replace(/\$darken/g, '#444');
+
+          // Clean up multiple empty lines
+          compiledCSS = compiledCSS.replace(/\n\s*\n\s*\n/g, '\n\n');
+
+          const directCSS = compiledCSS;
           const styledContent = `
-            <style>${scopedCSS}</style>
+            <style>${directCSS}</style>
             <div class="document-preview-content">
               ${rendered}
             </div>
