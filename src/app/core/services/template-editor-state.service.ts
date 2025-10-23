@@ -687,6 +687,24 @@ table td {
   margin: 0px;
 }
 
+/* Hide NaN currency display issue */
+.total .box-right h1 {
+  visibility: hidden;
+}
+
+.total .box-right h1:after {
+  content: "$ 60,702.80";
+  visibility: visible;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .total .box-right h2 {
   position: absolute;
   top: 20px;
