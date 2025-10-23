@@ -662,21 +662,11 @@ table td {
 .footer {
   height: 100%;
   border-top: 2px solid $primary;
-  padding-top: 10px;
-  margin-top: 10px;
+  padding-top: 15px;
+  margin-top: 30px;
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-}
-
-.footer .block {
-  font-size: 0.9rem;
-  line-height: 1.4;
-  margin-bottom: 8px;
-  padding: 2px 0;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
 }
 
 .body{
@@ -687,8 +677,44 @@ table td {
   font-size: 8pt;
 }
 
-.footer .block {
-	padding: 3px 0;
+/* Footer text styling - consolidated and enhanced */
+.footer .block,
+.preview-document .footer .block {
+  font-size: 0.75rem !important;
+  line-height: 1.3 !important;
+  margin-bottom: 6px !important;
+  padding: 2px 0 !important;
+  color: #666666 !important;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Footer bold text (titles) */
+.footer .block b,
+.preview-document .footer .block b {
+  color: #444444 !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+}
+
+/* Footer general styling */
+.footer,
+.preview-document .footer {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Footer spacing enhancement */
+.preview-document .footer {
+  margin-top: 40px !important;
+  padding-top: 20px !important;
+  border-top: 2px solid $primary !important;
+}
+
+/* Add space between body and footer */
+.preview-document .body {
+  margin-bottom: 20px !important;
+  padding-bottom: 10px !important;
 }
 
 /* A4 Document Size Configuration */
