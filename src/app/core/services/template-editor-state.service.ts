@@ -701,7 +701,7 @@ table td {
   margin: 0 auto;
   background: white;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  padding: 20mm;
+  padding: 10mm 10mm 5mm 5mm;
   box-sizing: border-box;
   font-size: 12pt;
   line-height: 1.4;
@@ -784,14 +784,46 @@ body, html {
   min-width: 210mm !important;
   margin: 0 auto;
   flex-shrink: 0;
-  white-space: nowrap;
+  box-sizing: border-box;
+  display: block;
 }
 
-/* Ensure the preview content wrapper doesn't center on small screens */
+/* Ensure the preview content wrapper allows full width usage */
 .preview-panel .preview-content .preview-document,
 .preview-content .preview-document {
   margin: 0;
-  white-space: normal;
+  width: 210mm !important;
+}
+
+/* Make sure all content inside uses full A4 width */
+.preview-document * {
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* Specific fixes for layout elements */
+.preview-document .row {
+  width: 100% !important;
+  margin: 0 -15px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+.preview-document .col-1,
+.preview-document .col-2,
+.preview-document .col-3,
+.preview-document .col-4,
+.preview-document .col-5,
+.preview-document .col-6,
+.preview-document .col-7,
+.preview-document .col-8,
+.preview-document .col-9,
+.preview-document .col-10,
+.preview-document .col-11,
+.preview-document .col-12 {
+  padding: 0 15px !important;
+  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
 }
 
 /* Responsive adjustments for screen display */
