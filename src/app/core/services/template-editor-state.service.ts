@@ -514,16 +514,23 @@ $grey: #444;
   color: #fff;
 }
 
-.header,
+.header {
+  position: relative;
+  height: 160px;
+  min-height: 160px;
+  overflow: hidden;
+  margin-bottom: 35px;
+  display: flex;
+  align-items: stretch;
+}
+
 .header .col-3,
 .header .col-4,
 .header .col-5{
   position: relative;
   height: 100%;
-}
-
-.header {
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .footer {
@@ -544,7 +551,8 @@ $grey: #444;
   right: 0px;
   left: 0px;
   top: 0px;
-  bottom: 20px;
+  bottom: 0px;
+  height: 100%;
 }
 
 .logo .box {
@@ -569,14 +577,19 @@ hr {
 
 .details {
   position: absolute;
-  bottom: 10px;
+  bottom: 15px;
+  right: 0;
+  left: 0;
   width: 100%;
+  padding: 0 15px;
+  box-sizing: border-box;
 }
 
 .details h1 {
-  font-size: 30pt;
+  font-size: 22pt;
   margin: 0px;
   padding: 0px;
+  line-height: 1.1;
 }
 
 .details .block {
@@ -711,10 +724,71 @@ table td {
   border-top: 2px solid $primary !important;
 }
 
-/* Add space between body and footer */
-.preview-document .body {
+/* Add space between body and footer, and separation from header */
+.preview-document .body,
+.body {
+  margin-top: 15px !important;
   margin-bottom: 20px !important;
+  padding-top: 5px !important;
   padding-bottom: 10px !important;
+}
+
+/* Header specific fixes for preview */
+.preview-document .header {
+  height: 160px !important;
+  min-height: 160px !important;
+  margin-bottom: 40px !important;
+  display: flex !important;
+  align-items: stretch !important;
+}
+
+.preview-document .header .col-3,
+.preview-document .header .col-4,
+.preview-document .header .col-5 {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.preview-document .logo {
+  height: 100% !important;
+}
+
+.preview-document .details {
+  position: absolute !important;
+  bottom: 15px !important;
+  right: 0 !important;
+  left: 0 !important;
+  padding: 0 15px !important;
+}
+
+.preview-document .details h1 {
+  color: $primary !important;
+  margin-bottom: 8px !important;
+  font-size: 22pt !important;
+  line-height: 1.1 !important;
+}
+
+/* Improve details content readability */
+.preview-document .details .title,
+.details .title {
+  font-size: 0.7rem !important;
+  line-height: 1.2 !important;
+  margin-bottom: 3px !important;
+}
+
+.preview-document .details .block,
+.details .block {
+  font-size: 0.85rem !important;
+  line-height: 1.2 !important;
+  margin-bottom: 8px !important;
+  padding: 2px 0 !important;
+}
+
+.preview-document .details hr,
+.details hr {
+  margin: 8px 0 !important;
+  border-width: 1px !important;
 }
 
 /* A4 Document Size Configuration */
