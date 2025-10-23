@@ -103,35 +103,39 @@ export const InvoiceTemplate = {
 </div>
 {{/with}}`,
 
-  footer: `{{#with invoice}}
-<div class="footer">
-	<div class="row">
-		<div class="col-8">
-			<div class="thanks">
-				Thanks!
-			</div>
-			<br />
-			<div class="row">
-				<div class="col-12">
-					<div class="block"><b>Payment instructions</b></div>
-					<div class="block">{{payment_instructions}}</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-4">
-			<div class="total">
-				<div class="box box-left">
-					<h1>$ {{$currency order._subtotal}}</h1>
-				</div>
-				<div class="box box-right">
-					<h2>TOTAL</h2>
-					<h1>$ {{$currency order._total}}</h1>
-				</div>
-			</div>
+  footer: `<div class="row footer">
+	<div class="col-2">
+		<div class="block">
+			{{$icon
+				"party_mode"
+				library="material-design"
+				width=40
+				height=40
+				fit=true
+				color="#6A77D8"
+			}}
 		</div>
 	</div>
-</div>
-{{/with}}`,
+	<div class="col-2 text-right">
+		<div class="block">Address.</div>
+	</div>
+	<div class="col-3">
+		<div class="block">Mountain View</div>
+		<div class="block">0001 Happy Parkway</div>
+		<div class="block">Mountain View, CA 00000</div>
+		<div class="block">United States</div>
+	</div>
+	<div class="col-2 text-right">
+		<div class="block">Phone.</div>
+		<div class="block">Email.</div>
+		<div class="block">Web.</div>
+	</div>
+	<div class="col-3">
+		<div class="block">+1 000-000-0000</div>
+		<div class="block">company@prexview.com</div>
+		<div class="block">https://prexview.com</div>
+	</div>
+</div>`,
 
   pagination: `<div class="pagination">
 	Page {{_page}} of {{_pages}}

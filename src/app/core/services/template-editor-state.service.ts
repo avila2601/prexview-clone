@@ -469,6 +469,46 @@ $darken: #444;
 $secondary: #139ACE;
 $grey: #444;
 
+/* Grid System - Required for layout */
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.col-1, .col-2, .col-3, .col-4, .col-5, .col-6,
+.col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+  padding: 0 15px;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.col-1 { width: 8.333%; }
+.col-2 { width: 16.666%; }
+.col-3 { width: 25%; }
+.col-4 { width: 33.333%; }
+.col-5 { width: 41.666%; }
+.col-6 { width: 50%; }
+.col-7 { width: 58.333%; }
+.col-8 { width: 66.666%; }
+.col-9 { width: 75%; }
+.col-10 { width: 83.333%; }
+.col-11 { width: 91.666%; }
+.col-12 { width: 100%; }
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
 .primary {
   background: $primary;
   color: #fff;
@@ -624,7 +664,21 @@ table td {
   border-top: 2px solid $primary;
   padding-top: 10px;
   margin-top: 10px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
+
+.footer .block {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  padding: 2px 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
 .body{
   overflow:hidden;
 }
@@ -635,6 +689,127 @@ table td {
 
 .footer .block {
 	padding: 3px 0;
+}
+
+/* A4 Document Size Configuration */
+.document-preview-content,
+.preview-container,
+.template-preview {
+  width: 210mm;
+  max-width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 20mm;
+  box-sizing: border-box;
+  font-size: 12pt;
+  line-height: 1.4;
+}
+
+/* Preview container styling */
+body, html {
+  background: #f5f5f5;
+}
+
+/* Print media query for exact A4 sizing */
+@media print {
+  .document-preview-content,
+  .preview-container,
+  .template-preview {
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    padding: 20mm;
+    box-shadow: none;
+  }
+
+  body {
+    background: white;
+  }
+}
+
+/* Preview panel with horizontal scroll - RIGHT SIDE ONLY */
+.preview-panel .preview-content,
+.preview-content {
+  width: 100%;
+  height: 100%;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  padding: 20px;
+  background: #f5f5f5;
+  box-sizing: border-box;
+}
+
+/* Force scroll bars to be visible when content overflows */
+.preview-panel .preview-content::-webkit-scrollbar,
+.preview-content::-webkit-scrollbar {
+  width: 14px !important;
+  height: 14px !important;
+  background: #f1f1f1;
+}
+
+.preview-panel .preview-content::-webkit-scrollbar-track,
+.preview-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 7px;
+  border: 1px solid #e0e0e0;
+}
+
+.preview-panel .preview-content::-webkit-scrollbar-thumb,
+.preview-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 7px;
+  border: 1px solid #b0b0b0;
+}
+
+.preview-panel .preview-content::-webkit-scrollbar-thumb:hover,
+.preview-content::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+.preview-panel .preview-content::-webkit-scrollbar-corner,
+.preview-content::-webkit-scrollbar-corner {
+  background: #f1f1f1;
+}
+
+/* A4 document should maintain its size and force horizontal scroll */
+.preview-panel .preview-document,
+.preview-document,
+.document-preview-content,
+.preview-container,
+.template-preview {
+  width: 210mm !important;
+  max-width: none !important;
+  min-width: 210mm !important;
+  margin: 0 auto;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Ensure the preview content wrapper doesn't center on small screens */
+.preview-panel .preview-content .preview-document,
+.preview-content .preview-document {
+  margin: 0;
+  white-space: normal;
+}
+
+/* Responsive adjustments for screen display */
+@media screen and (max-width: 768px) {
+  .preview-wrapper,
+  .template-preview-container,
+  .document-preview-wrapper {
+    padding: 10px;
+  }
+
+  /* On mobile, keep A4 size but allow scrolling */
+  .document-preview-content,
+  .preview-container,
+  .template-preview {
+    width: 210mm !important;
+    min-width: 210mm;
+    padding: 15mm;
+  }
 }`;
   }
 

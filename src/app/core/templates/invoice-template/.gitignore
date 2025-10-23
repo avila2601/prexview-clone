@@ -1,0 +1,11 @@
+# Archivos protegidos del invoice - NO MODIFICAR
+# Estos archivos son críticos y no deben ser editados accidentalmente
+
+# Proteger estilos del invoice
+invoice-styles.scss
+
+# Proteger template del invoice
+invoice-template.ts
+
+# Proteger datos de ejemplo
+sample-data.xml
