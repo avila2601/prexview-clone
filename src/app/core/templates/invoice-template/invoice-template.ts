@@ -138,6 +138,15 @@ export const InvoiceTemplate = {
 </div>`,
 
   pagination: `<div class="pagination">
-	Page {{_page}} of {{_pages}}
+	<span class="page-title">
+		Page
+	</span>
+	<span class="page-number">
+		{{$print "page-number"}}
+	</span>
+	<span class="page-pipe"> / </span>
+	<span class="total-pages">
+		{{$print "total-pages"}}
+	</span>
 </div>`
 };

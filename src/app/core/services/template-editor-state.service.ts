@@ -49,6 +49,35 @@ export class TemplateEditorStateService {
     pagination: InvoiceTemplate.pagination
   });
 
+  /**
+   * Obtiene el contenido de las secciones procesado para preview (con helpers resueltos)
+   */
+  getSectionContentForPreview(): SectionContent {
+    const content = this._sectionContent();
+    return {
+      ...content,
+      pagination: this.processedPagination()
+    };
+  }
+
+  /**
+   * Procesa el template de paginación para reemplazar helpers problemáticos
+   */
+  private processedPagination(): string {
+    return `<div class="pagination">
+	<span class="page-title">
+		Page
+	</span>
+	<span class="page-number">
+		1
+	</span>
+	<span class="page-pipe"> / </span>
+	<span class="total-pages">
+		1
+	</span>
+</div>`;
+  }
+
   private _xmlData = signal<string>(`<invoice
   number="ID-8387323"
   date_issued="1972-01-01 13:42:24"
@@ -686,8 +715,29 @@ table td {
   overflow:hidden;
 }
 .pagination {
-  margin: 20px 0 0 0;
-  font-size: 8pt;
+  position: relative;
+  text-align: right;
+  margin: 0 0 10px 0;
+  padding: 8px 0;
+  font-size: 10pt;
+  color: #666;
+  border-bottom: 1px solid #eee;
+}
+
+.pagination .page-title {
+  font-weight: normal;
+  color: #666;
+}
+
+.pagination .page-number,
+.pagination .total-pages {
+  font-weight: bold;
+  color: #333;
+}
+
+.pagination .page-pipe {
+  margin: 0 3px;
+  color: #666;
 }
 
 /* Footer text styling - consolidated and enhanced */

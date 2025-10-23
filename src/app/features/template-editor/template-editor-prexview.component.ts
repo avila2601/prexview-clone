@@ -315,16 +315,16 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 
   async updatePreview(): Promise<void> {
     try {
-      const sections = this.editorState.sectionContent();
+      const sections = this.editorState.getSectionContentForPreview();
       const xmlData = this.editorState.xmlData();
       const cssData = this.editorState.cssData();
 
       // Combine all sections to create the full document
       const fullContent = `
+        ${sections.pagination}
         ${sections.header}
         ${sections.body}
         ${sections.footer}
-        ${sections.pagination}
       `.trim();
 
       const options = {
