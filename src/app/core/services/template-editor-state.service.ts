@@ -56,8 +56,20 @@ export class TemplateEditorStateService {
     const content = this._sectionContent();
     return {
       ...content,
+      header: this.processedHeader(),
       pagination: this.processedPagination()
     };
+  }
+
+  /**
+   * Procesa el template del header para mostrar fecha con hora
+   */
+  private processedHeader(): string {
+    const content = this._sectionContent();
+    return content.header.replace(
+      '{{$date _date_issued}}',
+      'January 1, 1972 1:42 PM'
+    );
   }
 
   /**
@@ -624,6 +636,10 @@ hr {
 .details .block {
   margin: 0px;
   padding: 5px 0 5px 5px;
+  white-space: nowrap; /* Evitar salto de línea */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* Permitir que el contenedor se reduzca */
 }
 
 table th {
@@ -816,6 +832,15 @@ table td {
   height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
+}
+
+/* Ampliar el área de detalles de la factura */
+.header .col-4 {
+  width: 20% !important; /* Reducir el espacio vacío */
+}
+
+.header .col-5 {
+  width: 55% !important; /* Ampliar el área de detalles */
 }
 
 .preview-document .logo {
