@@ -184,8 +184,40 @@
         </div>
       </div>
 
-      <!-- Right half: Empty space (matches preview panel) -->
-      <div class="w-1/2"></div>
+      <!-- Right half: Preview toolbar -->
+      <div class="w-1/2 flex items-center justify-between px-4 py-2">
+        <div class="flex items-center space-x-3">
+          <span class="text-sm text-gray-700 font-medium"
+            >Document Preview</span
+          >
+          <div class="flex items-center space-x-2">
+            <div
+              class="w-2 h-2 rounded-full"
+              [class]="previewHtml() ? 'bg-green-500' : 'bg-red-500'"
+            ></div>
+            <span class="text-xs text-gray-500 font-medium">
+              {{ previewHtml() ? "Rendered" : "Error" }}
+            </span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-1">
+          <button
+            mat-icon-button
+            class="w-7 h-7"
+            (click)="updatePreview()"
+            title="Refresh Preview"
+          >
+            <mat-icon class="text-gray-600 text-sm">refresh</mat-icon>
+          </button>
+          <button mat-icon-button class="w-7 h-7" title="Fullscreen Preview">
+            <mat-icon class="text-gray-600 text-sm">fullscreen</mat-icon>
+          </button>
+          <button mat-icon-button class="w-7 h-7" title="Export Preview">
+            <mat-icon class="text-gray-600 text-sm">download</mat-icon>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -258,43 +290,6 @@
 
     <!-- Right Preview Panel -->
     <div class="preview-panel w-1/2 flex flex-col bg-gray-100">
-      <!-- Preview Toolbar -->
-      <div
-        class="preview-toolbar bg-gray-50 px-4 py-2 border-b border-gray-200 flex items-center justify-between"
-      >
-        <div class="flex items-center space-x-3">
-          <span class="text-sm text-gray-700 font-medium"
-            >Document Preview</span
-          >
-          <div class="flex items-center space-x-2">
-            <div
-              class="w-2 h-2 rounded-full"
-              [class]="previewHtml() ? 'bg-green-500' : 'bg-red-500'"
-            ></div>
-            <span class="text-xs text-gray-500 font-medium">
-              {{ previewHtml() ? "Rendered" : "Error" }}
-            </span>
-          </div>
-        </div>
-
-        <div class="flex items-center space-x-1">
-          <button
-            mat-icon-button
-            class="w-7 h-7"
-            (click)="updatePreview()"
-            title="Refresh Preview"
-          >
-            <mat-icon class="text-gray-600 text-sm">refresh</mat-icon>
-          </button>
-          <button mat-icon-button class="w-7 h-7" title="Fullscreen Preview">
-            <mat-icon class="text-gray-600 text-sm">fullscreen</mat-icon>
-          </button>
-          <button mat-icon-button class="w-7 h-7" title="Export Preview">
-            <mat-icon class="text-gray-600 text-sm">download</mat-icon>
-          </button>
-        </div>
-      </div>
-
       <!-- Preview Content -->
       <div class="preview-content flex-1 overflow-auto p-6 bg-gray-100">
         <div class="preview-document w-full">
