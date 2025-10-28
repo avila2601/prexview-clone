@@ -436,7 +436,7 @@ export class TemplateEditorStateService {
 
     return {
       name: this._templateName(),
-      description: 'Template created with PrexView Studio',
+      description: 'Template created with DataRender Studio',
       htmlContent: Object.values(sections).join('\n\n'),
       status: this.isEditMode() ? TemplateStatus.ACTIVE : TemplateStatus.DRAFT,
       variables: this._detectedVariables(),

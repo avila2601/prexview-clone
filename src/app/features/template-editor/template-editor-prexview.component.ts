@@ -27,8 +27,8 @@ import { Template, TemplateStatus, VariableType } from '../../core/models';
 declare var monaco: any;
 
 /**
- * Template Editor Component - PrexView Studio Style
- * Replica exacta de la interfaz de PrexView
+ * Template Editor Component - DataRender Studio Style
+ * Replica exacta de la interfaz de DataRender
  */
 @Component({
   selector: 'app-template-editor-prexview',
@@ -337,7 +337,7 @@ export class TemplateEditorPrexviewComponent implements OnInit, OnDestroy {
 
       this.previewService.generatePreview(fullContent, options).subscribe({
         next: (result: any) => {
-          this.previewHtml.set(this.sanitizer.bypassSecurityTrustHtml(result.html));
+          this.previewHtml.set(result.html);
         },
         error: (error: any) => {
           console.error('Preview error:', error);

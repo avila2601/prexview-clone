@@ -5,7 +5,7 @@
       <div class="flex items-center space-x-4">
         <div class="flex items-center space-x-2">
           <div class="w-4 h-4 bg-green-500 rounded-full"></div>
-          <span class="text-sm font-medium text-gray-800">PrexView Studio</span>
+          <span class="text-sm font-medium text-gray-800">DataRender</span>
         </div>
         <div class="text-sm text-gray-600 cursor-pointer hover:text-gray-800">
           Edit
@@ -133,18 +133,59 @@
   <!-- Document Sections Tabs -->
   <div class="sections-tabs bg-white border-b border-gray-200">
     <div class="flex">
-      <button
-        *ngFor="let section of documentSections"
-        class="section-tab px-6 py-3 text-sm font-medium border-b-2 transition-colors uppercase tracking-wide"
-        [class]="
-          currentSection() === section
-            ? 'text-blue-600 border-blue-600 bg-blue-50'
-            : 'text-gray-600 border-transparent hover:text-gray-900 hover:border-gray-300 hover:bg-gray-50'
-        "
-        (click)="setCurrentSection(section)"
+      <!-- Left half: Section tabs (matches editor panel width) -->
+      <div
+        class="w-1/2 flex items-center justify-between border-r border-gray-300"
       >
-        {{ section }}
-      </button>
+        <div class="flex">
+          <button
+            *ngFor="let section of documentSections"
+            class="section-tab px-6 py-3 text-sm font-medium border-b-2 transition-colors uppercase tracking-wide"
+            [class]="
+              currentSection() === section
+                ? 'text-blue-600 border-blue-600 bg-blue-50'
+                : 'text-gray-600 border-transparent hover:text-gray-900 hover:border-gray-300 hover:bg-gray-50'
+            "
+            (click)="setCurrentSection(section)"
+          >
+            {{ section }}
+          </button>
+        </div>
+
+        <!-- Editor Toolbar aligned to the left within this half -->
+        <div class="flex items-center space-x-4 px-4">
+          <div class="flex items-center space-x-3">
+            <span class="text-sm text-gray-600 font-mono">{{
+              currentLine()
+            }}</span>
+            <span class="text-gray-400">•</span>
+            <span class="text-sm text-gray-600"
+              >{{ detectedVariables().length }} variables</span
+            >
+            <span class="text-gray-400">•</span>
+            <span class="text-sm text-gray-600"
+              >{{ getCurrentSectionContent().length }} chars</span
+            >
+          </div>
+          <div class="flex items-center space-x-1">
+            <button mat-icon-button class="w-7 h-7" title="Undo">
+              <mat-icon class="text-gray-600 text-sm">undo</mat-icon>
+            </button>
+            <button mat-icon-button class="w-7 h-7" title="Redo">
+              <mat-icon class="text-gray-600 text-sm">redo</mat-icon>
+            </button>
+            <button mat-icon-button class="w-7 h-7" title="Find">
+              <mat-icon class="text-gray-600 text-sm">search</mat-icon>
+            </button>
+            <button mat-icon-button class="w-7 h-7" title="Replace">
+              <mat-icon class="text-gray-600 text-sm">find_replace</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right half: Empty space (matches preview panel) -->
+      <div class="w-1/2"></div>
     </div>
   </div>
 
@@ -154,39 +195,6 @@
     <div
       class="editor-panel w-1/2 flex flex-col border-r border-gray-300 bg-white"
     >
-      <!-- Editor Toolbar -->
-      <div
-        class="editor-toolbar bg-gray-50 px-4 py-2 border-b border-gray-200 flex items-center justify-between"
-      >
-        <div class="flex items-center space-x-3">
-          <span class="text-sm text-gray-600 font-mono">{{
-            currentLine()
-          }}</span>
-          <span class="text-gray-400">•</span>
-          <span class="text-sm text-gray-600"
-            >{{ detectedVariables().length }} variables</span
-          >
-          <span class="text-gray-400">•</span>
-          <span class="text-sm text-gray-600"
-            >{{ getCurrentSectionContent().length }} chars</span
-          >
-        </div>
-        <div class="flex items-center space-x-1">
-          <button mat-icon-button class="w-7 h-7" title="Undo">
-            <mat-icon class="text-gray-600 text-sm">undo</mat-icon>
-          </button>
-          <button mat-icon-button class="w-7 h-7" title="Redo">
-            <mat-icon class="text-gray-600 text-sm">redo</mat-icon>
-          </button>
-          <button mat-icon-button class="w-7 h-7" title="Find">
-            <mat-icon class="text-gray-600 text-sm">search</mat-icon>
-          </button>
-          <button mat-icon-button class="w-7 h-7" title="Replace">
-            <mat-icon class="text-gray-600 text-sm">find_replace</mat-icon>
-          </button>
-        </div>
-      </div>
-
       <!-- Monaco Editor -->
       <div class="monaco-container flex-1 relative bg-gray-900">
         <div #monacoEditor class="w-full h-full"></div>
